@@ -37,11 +37,12 @@ class Viewer:
         self.scene = self.server.scene
 
     def add_keyframe(self, keyframe: Frame):
+        t, q = as_SE3(keyframe.T_WC.cpu()).data.split([3, 4], -1)
         self.scene.add_camera_frustum(f"/keyframes/{keyframe.frame_id}", 
                                       fov=60, 
                                       aspect=1.0,
-                                      position=as_SE3(keyframe.T_WC.cpu()).translation(),
-                                      wxyz=as_SE3(keyframe.T_WC.cpu()).quaternion())
+                                      position=t,
+                                      wxyz=q)
 
 
     # def render(self):

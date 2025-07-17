@@ -60,7 +60,9 @@ app = modal.App("mast3r-slam", image=modal.Image.from_dockerfile(Path(__file__).
     .run_commands("wget https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_trainingfree.pth -P checkpoints/")
     .run_commands("wget https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_codebook.pkl -P checkpoints/")
     .run_commands("bash ./scripts/download_tum.sh")
+    # TODO: The following commands should be earlier but I don't want to rebuild the whole image
     .run_commands("pip install viser")
+    .run_commands("pip uninstall -y numpy && pip install numpy==1.26.4")
     # # Post install, try actually running a demo example to prebuild/download things
     .run_commands("git pull")
     .run_function(dummy_function_2, secrets=MODAL_SECRETS, volumes=MODAL_VOLUMES, gpu="T4")
