@@ -39,10 +39,19 @@ class Viewer:
     def add_keyframe(self, keyframe: Frame):
         t, q = as_SE3(keyframe.T_WC.cpu()).data.split([3, 4], -1)
         self.scene.add_camera_frustum(f"/keyframes/{keyframe.frame_id}", 
-                                      fov=60, 
+                                      fov=55, 
                                       aspect=1.0,
-                                      position=t,
-                                      wxyz=q)
+                                      scale=0.1,
+                                      position=t.flatten().numpy(),
+                                      wxyz=q.flatten().numpy())
+
+        if keyframe.X_canon is not None and keyframe.C is not None:
+            self.scene.add_point_cloud(f"/points/{keyframe.frame_id}", 
+                                    points=keyframe.X_canon.cpu().numpy().astype(np.float32) ,
+                                    colors=(0, 1, 0),
+                                    # colors=keyframe.C.cpu().numpy().astype(np.float32), # TODO: I think this is something else like confidence
+                                    point_size=0.01
+                                    )
 
 
     # def render(self):
