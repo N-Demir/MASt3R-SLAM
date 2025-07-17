@@ -14,7 +14,7 @@ MODAL_VOLUMES = {
     "/root/output": modal.Volume.from_name("output", create_if_missing=True),
 }
 
-def dummy_function_2():
+def dummy_function():
     # Testing whether this could get models downloaded and cuda things prebuilt
     # but needs to be placed into a python function unfortunately so that modal can properly
     # run it with `run_function` and attach a volume
@@ -64,8 +64,8 @@ app = modal.App("mast3r-slam", image=modal.Image.from_dockerfile(Path(__file__).
     .run_commands("pip install viser")
     .run_commands("pip uninstall -y numpy && pip install numpy==1.26.4")
     # # Post install, try actually running a demo example to prebuild/download things
-    .run_commands("git pull", force_build=True)
-    .run_function(dummy_function_2, secrets=MODAL_SECRETS, volumes=MODAL_VOLUMES, gpu="T4")
+    .run_commands("git pull")
+    # .run_function(dummy_function, secrets=MODAL_SECRETS, volumes=MODAL_VOLUMES, gpu="T4")
     # Get the latest code
     .run_commands("git pull", force_build=True)
 )
