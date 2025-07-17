@@ -300,7 +300,8 @@ if __name__ == "__main__":
             raise Exception("Invalid mode")
 
         if add_new_kf:
-            viewer.add_keyframe(frame)
+            if not args.no_viz:
+                viewer.add_keyframe(frame)
             keyframes.append(frame)
             states.queue_global_optimization(len(keyframes) - 1)
             # In single threaded mode, wait for the backend to finish

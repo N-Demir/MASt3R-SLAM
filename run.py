@@ -19,7 +19,7 @@ def dummy_function_2():
     # but needs to be placed into a python function unfortunately so that modal can properly
     # run it with `run_function` and attach a volume
     print("Running dummy function")
-    subprocess.run("python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/ --config config/calib.yaml", shell=True, cwd=".")
+    subprocess.run("python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/ --config config/calib.yaml --no-viz", shell=True, cwd=".")
 
 
 app = modal.App("mast3r-slam", image=modal.Image.from_dockerfile(Path(__file__).parent / "Dockerfile")
@@ -64,7 +64,7 @@ app = modal.App("mast3r-slam", image=modal.Image.from_dockerfile(Path(__file__).
     .run_commands("pip install viser")
     .run_commands("pip uninstall -y numpy && pip install numpy==1.26.4")
     # # Post install, try actually running a demo example to prebuild/download things
-    .run_commands("git pull")
+    .run_commands("git pull", force_build=True)
     .run_function(dummy_function_2, secrets=MODAL_SECRETS, volumes=MODAL_VOLUMES, gpu="T4")
     # Get the latest code
     .run_commands("git pull", force_build=True)
