@@ -19,7 +19,6 @@ def dummy_function():
     # but needs to be placed into a python function unfortunately so that modal can properly
     # run it with `run_function` and attach a volume
     print("Running dummy function")
-    subprocess.run("bash ./scripts/download_tum.sh", shell=True, cwd=".")
     subprocess.run("python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/ --config config/calib.yaml", shell=True, cwd=".")
 
 
@@ -49,18 +48,19 @@ app = modal.App("mast3r-slam", image=modal.Image.from_dockerfile(Path(__file__).
     .env({"TORCH_CUDA_ARCH_LIST": "7.5;8.0;8.9"})
     .workdir("/root/workspace")
     # Clone EDGS repository into current directory
-    .run_commands("git clone https://github.com/N-Demir/vggt-slam.git . --recursive")
+    .run_commands("git clone https://github.com/N-Demir/mast3r-slam.git . --recursive")
     # TODO: Are pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.1 all properly installed?
     .run_commands("pip install torchvision==0.20.1 torchaudio==2.5.1")
-    .run_commands("git clone https://github.com/N-Demir/mast3r-slam.git . --recursive")
     .run_commands("pip install -e thirdparty/mast3r")
     .run_commands("pip install -e thirdparty/in3d")
-    .run_commands("pip install --no-build-isolation -e .")
+    .run_commands("pip install --no-build-isolation -e .", gpu="T4")
     .run_commands("pip install torchcodec==0.1") # Faster mp4 loading
     .run_commands("mkdir -p checkpoints/")
     .run_commands("wget https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth -P checkpoints/")
     .run_commands("wget https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_trainingfree.pth -P checkpoints/")
     .run_commands("wget https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric_retrieval_codebook.pkl -P checkpoints/")
+    .run_commands("bash ./scripts/download_tum.sh")
+    .run_commands("pip install viser")
     # # Post install, try actually running a demo example to prebuild/download things
     .run_commands("git pull")
     .run_function(dummy_function, secrets=MODAL_SECRETS, volumes=MODAL_VOLUMES, gpu="T4")
