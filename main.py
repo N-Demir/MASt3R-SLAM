@@ -21,7 +21,7 @@ from mast3r_slam.mast3r_utils import (
 )
 from mast3r_slam.multiprocess_utils import new_queue, try_get_msg
 from mast3r_slam.tracker import FrameTracker
-from mast3r_slam.visualization import WindowMsg, run_visualization
+from mast3r_slam.visualization import Viewer, WindowMsg
 import torch.multiprocessing as mp
 
 
@@ -187,11 +187,13 @@ if __name__ == "__main__":
     states = SharedStates(manager, h, w)
 
     if not args.no_viz:
-        viz = mp.Process(
-            target=run_visualization,
-            args=(config, states, keyframes, main2viz, viz2main),
+        viewer = Viewer(
+            states=states,
+            keyframes=keyframes,
+            main2viz=main2viz,
+            viz2main=viz2main,
         )
-        viz.start()
+
 
     model = load_mast3r(device=device)
     model.share_memory()
@@ -219,9 +221,12 @@ if __name__ == "__main__":
         if recon_file.exists():
             recon_file.unlink()
 
+    #! Provides live pose tracking for the most current keyframe
     tracker = FrameTracker(model, keyframes, device)
+
     last_msg = WindowMsg()
 
+    #! Global optimization of saved keyframes
     backend = mp.Process(target=run_backend, args=(config, model, states, keyframes, K))
     backend.start()
 
@@ -295,6 +300,7 @@ if __name__ == "__main__":
             raise Exception("Invalid mode")
 
         if add_new_kf:
+            viewer.add_keyframe(frame)
             keyframes.append(frame)
             states.queue_global_optimization(len(keyframes) - 1)
             # In single threaded mode, wait for the backend to finish
@@ -331,5 +337,3 @@ if __name__ == "__main__":
 
     print("done")
     backend.join()
-    if not args.no_viz:
-        viz.join()
