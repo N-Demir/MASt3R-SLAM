@@ -14,7 +14,7 @@
 # TODO: Fill out the needed command
 # gcloud storage rsync -r data/tandt/truck gs://tour_storage/data/tandt/truck
 
-FROM pytorch/pytorch:2.5.1-cuda12.1-cudnn8-devel
+FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-devel
 
 # Set environment variables to avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
