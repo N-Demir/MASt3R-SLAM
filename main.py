@@ -300,8 +300,6 @@ if __name__ == "__main__":
             raise Exception("Invalid mode")
 
         if add_new_kf:
-            if not args.no_viz:
-                viewer.rerender()
             keyframes.append(frame)
             states.queue_global_optimization(len(keyframes) - 1)
             # In single threaded mode, wait for the backend to finish
@@ -310,6 +308,8 @@ if __name__ == "__main__":
                     if len(states.global_optimizer_tasks) == 0:
                         break
                 time.sleep(0.01)
+            if not args.no_viz:
+                viewer.rerender()
         # log time
         if i % 30 == 0:
             FPS = i / (time.time() - fps_timer)
