@@ -36,25 +36,22 @@ class Viewer:
         self.server = viser.ViserServer()
         self.scene = self.server.scene
 
-    def render(self, keyframes: list[Frame]):
-        self.scene.reset()
-        for keyframe in keyframes:
-            # t, q = as_SE3(keyframe.T_WC.cpu()).data.split([3, 4], -1)
-            # t = t.flatten().numpy()
-            # q = q.flatten().numpy()
-            # self.scene.add_camera_frustum(f"/keyframes/{keyframe.frame_id}", 
-            #                             fov=55, 
-            #                             aspect=1.0,
-            #                             scale=0.1,
-            #                             position=t,
-            #                             wxyz=q)
-            self.scene.add_point_cloud(f"/points/{keyframe.frame_id}", 
-                                    points=keyframe.T_WC.act(keyframe.X_canon).cpu().numpy().reshape(-1, 3),
-                                    colors=(keyframe.uimg.cpu().numpy() * 255).astype(np.uint8).reshape(-1, 3),
-                                    # colors=keyframe.C.cpu().numpy().astype(np.float32), # TODO: I think this is something else like confidence
-                                    point_size=0.0001,
-                                    point_shape="circle",
-                                    )
+    def add_keyframe(self, keyframe: Frame):
+        T_WC = as_SE3(keyframe.T_WC)
+        x, y, z, qx, qy, qz, qw = T_WC.data.numpy().reshape(-1)
+        self.scene.add_camera_frustum(f"/keyframes/{keyframe.frame_id}", 
+                                    fov=55, 
+                                    aspect=1.0,
+                                    scale=0.05,
+                                    position=np.array([x, y, z]),
+                                    wxyz=np.array([qw, qx, qy, qz]))
+        self.scene.add_point_cloud(f"/points/{keyframe.frame_id}", 
+                                points=keyframe.T_WC.act(keyframe.X_canon).cpu().numpy().reshape(-1, 3),
+                                colors=(keyframe.uimg.cpu().numpy() * 255).astype(np.uint8).reshape(-1, 3),
+                                # colors=keyframe.C.cpu().numpy().astype(np.float32), # TODO: I think this is something else like confidence
+                                point_size=0.001,
+                                point_shape="circle",
+                                )
 
 
     # def render(self):

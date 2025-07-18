@@ -9,7 +9,7 @@ Eval -- `python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room --no-
 `evo_traj tum --ref datasets/tum/rgbd_dataset_freiburg1_room/groundtruth.txt /root/output/tum/no_calib/rgbd_dataset_freiburg1_room/rgbd_dataset_freiburg1_room/rgbd_dataset_freiburg1_room.txt --save_plot traj -as`
 
 
-run with `python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/ --config config/calib.yaml`
+run with `python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/ --config config/eval_no_calib.yaml`
 
 ---
 

@@ -309,7 +309,7 @@ if __name__ == "__main__":
                         break
                 time.sleep(0.01)
             if not args.no_viz:
-                viewer.render(keyframes)
+                viewer.add_keyframe(frame)
         # log time
         if i % 30 == 0:
             FPS = i / (time.time() - fps_timer)
