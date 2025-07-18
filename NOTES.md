@@ -1,0 +1,1 @@
+run with `python main.py --dataset datasets/tum/rgbd_dataset_freiburg1_room/ --config config/calib.yaml`
