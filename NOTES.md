@@ -17,3 +17,7 @@ While running with calibration did half the APE (from 0.1 mean to 0.05).
 
 Make sure to align the trajectories with `-as` if using `evo_traj` 
 
+---
+
+No clue what is_dirty does... thought it was maybe set when keyframes were updated by the global optimizer. Not sure if that works at all. Not sure what the backend optimizer does.
+
