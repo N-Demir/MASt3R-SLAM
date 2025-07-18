@@ -301,7 +301,7 @@ if __name__ == "__main__":
 
         if add_new_kf:
             if not args.no_viz:
-                viewer.rerender(frame)
+                viewer.rerender()
             keyframes.append(frame)
             states.queue_global_optimization(len(keyframes) - 1)
             # In single threaded mode, wait for the backend to finish
