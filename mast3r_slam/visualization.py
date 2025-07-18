@@ -39,15 +39,19 @@ class Viewer:
     def render(self, keyframes: list[Frame]):
         self.scene.reset()
         for keyframe in keyframes:
-            t, q = as_SE3(keyframe.T_WC.cpu()).data.split([3, 4], -1)
+            t, q = as_SE3(keyframe.T_WC.inv().cpu()).data.split([3, 4], -1)
             t = t.flatten().numpy()
             q = q.flatten().numpy()
+
+            # Convert q (xyzw) to wxyz
+            wxyz = q[..., [3, 0, 1, 2]]
+
             self.scene.add_camera_frustum(f"/keyframes/{keyframe.frame_id}", 
                                         fov=55, 
                                         aspect=1.0,
                                         scale=0.1,
                                         position=t,
-                                        wxyz=q)
+                                        wxyz=wxyz)
 
             if keyframe.X_canon is not None:
                 self.scene.add_point_cloud(f"/points/{keyframe.frame_id}", 
@@ -57,7 +61,7 @@ class Viewer:
                                         point_size=0.0001,
                                         point_shape="circle",
                                         position=t,
-                                        wxyz=q
+                                        wxyz=wxyz
                                         )
 
 
