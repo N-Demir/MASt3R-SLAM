@@ -96,7 +96,6 @@ class Viewer:
     #     #     thickness=self.line_thickness * self.scale,
     #     # )
 
-    #     #! This gets the total number of keyframes and the "dirty" keyframes (ones that need to be re-rendered)
     #     with self.keyframes.lock:
     #         N_keyframes = len(self.keyframes)
     #         dirty_idx = self.keyframes.get_dirty_idx()
