@@ -316,6 +316,9 @@ if __name__ == "__main__":
             print(f"FPS: {FPS}")
         i += 1
 
+        if not args.no_viz:
+            viewer.set_camera_to_frame(frame)
+
     if dataset.save_results:
         save_dir, seq_name = eval.prepare_savedir(args, dataset)
         eval.save_traj(save_dir, f"{seq_name}.txt", dataset.timestamps, keyframes)
