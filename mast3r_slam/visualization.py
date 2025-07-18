@@ -36,9 +36,9 @@ class Viewer:
         self.server = viser.ViserServer()
         self.scene = self.server.scene
 
-    def rerender(self):
+    def render(self, keyframes: list[Frame]):
         self.scene.reset()
-        for keyframe in self.keyframes:
+        for keyframe in keyframes:
             t, q = as_SE3(keyframe.T_WC.cpu()).data.split([3, 4], -1)
             t = t.flatten().numpy()
             q = q.flatten().numpy()
